@@ -1,3 +1,6 @@
+library("hash")
+
+
 #' Convert an input vector into activations
 #'
 #' @param data an input matrix, each row is a data entry
