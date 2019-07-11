@@ -93,7 +93,7 @@ BuildEmbeddedObject <- function(data, hash.length, nProj, sampling.rate, do.cent
     encode.short   <- GetShortHash(activations, nProj)
   end_time   <- Sys.time()
   elapse     <-as.numeric(end_time-start_time)
-  message(paste("Calculating activations and the binary codes takes" ,elapse, "seconds."))
+  message(paste("Calculating activations and the binary codes takes" ,sprintf("%.2f",elapse), "seconds."))
 
 
   # build a hash table for quick query of short encoded cells
@@ -102,11 +102,10 @@ BuildEmbeddedObject <- function(data, hash.length, nProj, sampling.rate, do.cent
     HashsetInsertMatrix(matrix=encode.short, hash.table=hashset.short)
   end_time   <- Sys.time()
   elapse     <-as.numeric(end_time-start_time)
-  message(paste("Hashing short codes takes" ,elapse, "seconds."))
+  message(paste("Hashing short codes takes" ,sprintf("%.2f",elapse), "seconds."))
 
   # Return a list of embeddings
-  require("tictoc")
-  print(paste(nrow(data), "data items are processed"))
+  message(paste(nrow(data), "data items are processed"))
   return (list("encode.long"  = encode.long  ,
                "encode.short" = encode.short ,
                "activations"  = activations  ,
