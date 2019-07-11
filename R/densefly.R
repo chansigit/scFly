@@ -1,6 +1,3 @@
-library("hash")
-
-
 #' Convert an input vector into activations
 #'
 #' @param data an input matrix, each row is a data entry
@@ -101,6 +98,7 @@ BuildEmbeddedObject <- function(data, hash.length, nProj, sampling.rate, do.cent
 
   # build a hash table for quick query of short encoded cells
   start_time <- Sys.time()
+    library("hash")
     hashset.short  <- hash()
     HashsetInsertMatrix(matrix=encode.short, hash.table=hashset.short)
   end_time   <- Sys.time()
