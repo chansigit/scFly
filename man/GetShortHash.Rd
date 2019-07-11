@@ -17,3 +17,8 @@ a binary matrix, each row is an embeded data entry
 \description{
 GetShortHash
 }
+\examples{
+activations<-c(-3, -2, 1, 0, 5,   -1, 2, 1, 0, 7,   0, -2, 0, 0, 1)
+activations<-as.matrix(t(activations))
+GetShortHash(activations,5) # it is supposed to be a matrix of (1,1,0)
+}
