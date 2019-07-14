@@ -50,23 +50,38 @@ GetLongHash <- function(activations){
 #' @return a binary matrix, each row is an embeded data entry
 #' @export
 #'
-#' @examples activations<-c(-3, -2, 1, 0, 5,   -1, 2, 1, 0, 7,   0, -2, 0, 0, 1)
+#' @examples
+#' activations<-c(-3, -2, 1, 0, 5,   -1, 2, 1, 0, 7,   0, -2, 0, 0, 1)
 #'activations<-as.matrix(t(activations))
 #'GetShortHash(activations,5) # it is supposed to be a matrix of (1,1,0)
-
 GetShortHash<- function(activations, nProj){
   # Calculate group sum of activations
   cell.id<- rownames(activations)
 
-  data.shortly.embedded<- NULL
-  for (i in 1:nrow(activations)){
-    activation          <- activations[i, ]
-    activation.aggr     <- tapply( activation, (seq_along(activation)-1) %/% nProj, sum)
-    data.shortly.embedded <- rbind(data.shortly.embedded, (activation.aggr>=0))
+  hash.length <- ncol(activations)/nProj
+  oneColumn<-function(cols, colID){
+    cbind(cols,   c(rep(0, (colID-1)*nProj), rep(1,nProj), rep(0, (hash.length-colID)*nProj )) )
   }
+  library("purrr")
+  groupSumOperator <- reduce(1:hash.length,oneColumn, .init=NULL)
+  data.shortly.embedded <- ((activations %*% groupSumOperator)>=0 +0)
+
   rownames(data.shortly.embedded) <- cell.id
   return(data.shortly.embedded+0)
 }
+# GetShortHash<- function(activations, nProj){
+#   # Calculate group sum of activations
+#   cell.id<- rownames(activations)
+#
+#   data.shortly.embedded<- NULL
+#   for (i in 1:nrow(activations)){
+#     activation          <- activations[i, ]
+#     activation.aggr     <- tapply( activation, (seq_along(activation)-1) %/% nProj, sum)
+#     data.shortly.embedded <- rbind(data.shortly.embedded, (activation.aggr>=0))
+#   }
+#   rownames(data.shortly.embedded) <- cell.id
+#   return(data.shortly.embedded+0)
+# }
 
 
 
