@@ -5,7 +5,7 @@
 \title{BuildEmbeddedObject}
 \usage{
 BuildEmbeddedObject(data, hash.length, nProj, sampling.rate,
-  do.center = FALSE)
+  do.center = FALSE, seed = 19940929)
 }
 \arguments{
 \item{data}{an input matrix, each row is a data entry}
@@ -17,6 +17,8 @@ BuildEmbeddedObject(data, hash.length, nProj, sampling.rate,
 \item{sampling.rate}{the fraction of input vector used to calculate one activation}
 
 \item{do.center}{set this to TRUE if you hope to zero-centralize the data}
+
+\item{seed}{a seed for generating random vectors in LSH}
 }
 \value{
 a list of embedding results `@long` stores the long hash, `@short` stores the short hash, `@activations` stores the activations

@@ -79,21 +79,24 @@ GetShortHash<- function(activations, nProj){
 #' @param nProj the number of random projections
 #' @param sampling.rate the fraction of input vector used to calculate one activation
 #' @param do.center set this to TRUE if you hope to zero-centralize the data
+#' @param seed a seed for generating random vectors in LSH
 #'
 #' @return a list of embedding results `@long` stores the long hash, `@short` stores the short hash, `@activations` stores the activations
 #' @export
 #'
 #' @examples
-BuildEmbeddedObject <- function(data, hash.length, nProj, sampling.rate, do.center=FALSE){
+BuildEmbeddedObject <- function(data, hash.length, nProj, sampling.rate, do.center=FALSE, seed=19940929){
+  set.seed(seed)
   if (do.center){
     data <- data-rowMeans(data)
   }
 
+  # calculate long and short encoding of cells
   start_time <- Sys.time()
-    embedding.size <- hash.length* nProj
-    activations    <- GetActivations(data, embedding.size, sampling.rate= sampling.rate)
-    encode.long    <- GetLongHash(activations)
-    encode.short   <- GetShortHash(activations, nProj)
+  embedding.size <- hash.length* nProj
+  activations    <- GetActivations(data, embedding.size, sampling.rate= sampling.rate)
+  encode.long    <- GetLongHash(activations)
+  encode.short   <- GetShortHash(activations, nProj)
   end_time   <- Sys.time()
   elapse     <-as.numeric(end_time-start_time)
   message(paste("Calculating activations and the binary codes takes" ,sprintf("%.2f",elapse), "seconds."))
@@ -101,18 +104,18 @@ BuildEmbeddedObject <- function(data, hash.length, nProj, sampling.rate, do.cent
 
   # build a hash table for quick query of short encoded cells
   start_time <- Sys.time()
-    library("hash")
-    hashset.short  <- hash()
-    HashsetInsertMatrix(matrix=encode.short, hash.table=hashset.short)
+  library("hash")
+  hashtable.short  <- hash()
+  HashtableInsertMatrix(matrix=encode.short, hash.table=hashtable.short)
   end_time   <- Sys.time()
   elapse     <-as.numeric(end_time-start_time)
   message(paste("Hashing short codes takes" ,sprintf("%.2f",elapse), "seconds."))
 
-  # Return a list of embeddings
+  # return a list of embeddings
   message(paste(nrow(data), "data items are processed"))
   return (list("encode.long"  = encode.long  ,
                "encode.short" = encode.short ,
                "activations"  = activations  ,
-               "hashset"      = hashset.short))
+               "hashtable"    = hashtable.short))
 }
 
