@@ -63,12 +63,13 @@ query.one.cell <- function(idx){
 #' @param reference.label labels of the reference
 #' @param cores number of cores used
 #'
-#' @return
+#' @return a vector of transfered labels after mapping
 #' @export
 #'
 #' @examples
 MappingCells <- function(query, reference, reference.label, cores){
   if (cores>1){
+    library(parallel)
     cl = makeCluster(cores)
     # load the packages into all slave processes
     clusterEvalQ(cl=cl, library("scFly"))

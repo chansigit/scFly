@@ -15,6 +15,9 @@ MappingCells(query, reference, reference.label, cores)
 
 \item{cores}{number of cores used}
 }
+\value{
+a vector of transfered labels after mapping
+}
 \description{
 MappingCells: apply query operations on the query matrix
 }
