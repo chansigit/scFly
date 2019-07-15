@@ -2,16 +2,13 @@
 % Please edit documentation in R/search.R
 \name{query.one.cell}
 \alias{query.one.cell}
-\title{query.one.cell A function wrapper for query dataset mapping}
+\title{query.one.cell: a wrapper for query operations}
 \usage{
 query.one.cell(idx)
 }
 \arguments{
-\item{idx}{the row index of data matrix}
-}
-\value{
-the index of nn data item
+\item{idx}{row index of cell in the query matrix}
 }
 \description{
-query.one.cell A function wrapper for query dataset mapping
+query.one.cell: a wrapper for query operations
 }

@@ -39,3 +39,47 @@ SearchCell <- function(query.shortEncoding, query.longEncoding, referenceObject)
 
   return (rownames(reference.longEncodingMatrix)[foundIdx])
 }
+
+
+#' query.one.cell: a wrapper for query operations
+#'
+#' @param idx row index of cell in the query matrix
+#'
+#' @return
+#' @export
+#'
+#' @examples
+query.one.cell <- function(idx){
+  index <- SearchCell(query.shortEncoding=query$encode.short[idx,],
+                      query.longEncoding =query$encode.long[idx,],
+                      referenceObject    =reference)
+  return(index)
+}
+
+#' MappingCells: apply query operations on the query matrix
+#'
+#' @param query query matrix
+#' @param reference reference matrix
+#' @param reference.label labels of the reference
+#' @param cores number of cores used
+#'
+#' @return
+#' @export
+#'
+#' @examples
+MappingCells <- function(query, reference, reference.label, cores){
+  if (cores>1){
+    cl = makeCluster(cores)
+    # load the packages into all slave processes
+    clusterEvalQ(cl=cl, library("scFly"))
+    # make variables visible in the work-horse function
+    clusterExport(cl=cl, c("query","reference","reference.label"))
+    index <- parSapply(cl, 1:nrow(query$encode.short), query.one.cell, simplify=TRUE)
+    stopCluster(cl)
+  }else{
+    index <- sapply(1:nrow(query$encode.short),
+                    query.one.cell,
+                    simplify=TRUE)
+  }
+  return(reference.label[as.numeric(index)])
+}
