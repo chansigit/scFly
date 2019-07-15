@@ -9,10 +9,9 @@
 #' @examples
 FindNNIndex<- function(query.vector, reference.matrix){
   library("e1071")
-
   hamming.distance.vector <- (apply( reference.matrix,1,hamming.distance,y =query.vector) )
-
-  which.min(hamming.distance.vector)
+  result<-which.min(hamming.distance.vector)
+  return(result)
 }
 
 
@@ -34,12 +33,15 @@ SearchCell <- function(query.shortEncoding, query.longEncoding, referenceObject)
     return (NULL)
   }
 
-  reference.longEncodingMatrix <- referenceObject$encode.long[rowidx,]
-  foundIdx <- FindNNIndex(query.vector=query.longEncoding, reference.longEncodingMatrix)
+  reference.longEncodingMatrix <- referenceObject$encode.long[rowidx,,drop=F]
 
-  return (rownames(reference.longEncodingMatrix)[foundIdx])
+  foundIdx <- FindNNIndex(query.vector=query.longEncoding,
+                          reference.matrix=reference.longEncodingMatrix)
+  # needs to be rewrite
+  #  foundRow <- reference.longEncodingMatrix[foundIdx,]
+  annotated<-(rownames(reference.longEncodingMatrix))[foundIdx]
+  return(annotated)
 }
-
 
 #' query.one.cell: a wrapper for query operations
 #'
@@ -68,19 +70,27 @@ query.one.cell <- function(idx){
 #'
 #' @examples
 MappingCells <- function(query, reference, reference.label, cores){
+  query.one.cell <- function(idx,reference){
+    label <- SearchCell(query.shortEncoding=query$encode.short[idx,],
+                        query.longEncoding =query$encode.long[idx,],
+                        referenceObject    =reference)
+    return(label)
+  }
   if (cores>1){
     library(parallel)
     cl = makeCluster(cores)
     # load the packages into all slave processes
     clusterEvalQ(cl=cl, library("scFly"))
     # make variables visible in the work-horse function
-    clusterExport(cl=cl, c("query","reference","reference.label"))
-    index <- parSapply(cl, 1:nrow(query$encode.short), query.one.cell, simplify=TRUE)
+    clusterExport(cl=cl, c("query","reference"))
+    rowid<-1:nrow(query$encode.short)
+    index <- parSapply(cl, rowid, query.one.cell, reference=reference, simplify=TRUE)
     stopCluster(cl)
   }else{
-    index <- sapply(1:nrow(query$encode.short),
-                    query.one.cell,
-                    simplify=TRUE)
+    rowid<-1:nrow(query$encode.short)
+    index <- sapply(rowid,query.one.cell,reference=reference, simplify=TRUE)
   }
-  return(reference.label[as.numeric(index)])
+  return(index)
+  # need rewriting
+  #return(reference.label[as.numeric(unlist(index))])
 }
