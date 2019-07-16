@@ -130,7 +130,7 @@ BuildEmbeddedObject <- function(data, hash.length, nProj, sampling.rate, do.cent
   message(paste(nrow(data), "data items are processed"))
   return (list("encode.long"  = encode.long  ,
                "encode.short" = encode.short ,
-               "activations"  = activations  ,
+               #"activations"  = activations  , remove activations to save space
                "hashtable"    = hashtable.short))
 }
 
