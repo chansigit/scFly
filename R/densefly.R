@@ -15,12 +15,10 @@ GetActivations <- function(data, embedding.size, sampling.rate){
   rand.proj.mat <- matrix(rbinom(rr*cc,1,sampling.rate),rr,cc) # binary random projection matrix
 
   # Calculate activations
-  activations   <- as.data.frame(as.matrix(data) %*% as.matrix(rand.proj.mat)) # N-by-d * d-by-mk = N-by-mk
+  activations   <- as.matrix(data) %*% as.matrix(rand.proj.mat) # N-by-d * d-by-mk = N-by-mk
   rownames(activations)<-rownames(data)
   return(activations)
 }
-
-
 
 
 
