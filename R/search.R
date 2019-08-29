@@ -43,20 +43,6 @@ SearchCell <- function(query.shortEncoding, query.longEncoding, referenceObject)
   return(annotated)
 }
 
-#' query.one.cell: a wrapper for query operations
-#'
-#' @param idx row index of cell in the query matrix
-#'
-#' @return
-#' @export
-#'
-#' @examples
-query.one.cell <- function(idx){
-  index <- SearchCell(query.shortEncoding=query$encode.short[idx,],
-                      query.longEncoding =query$encode.long[idx,],
-                      referenceObject    =reference)
-  return(index)
-}
 
 #' MappingCells: apply query operations on the query matrix
 #'
