@@ -6,5 +6,5 @@ Single-cell sequencing methods enables measurement of cells' molecular states at
 
 ## Tutorial
 
-- MNIST Demo
+- *** MNIST Demo ***
 We use MNIST data to illustrate how DenseFly algorithm performs similarity searching. Please see the Jupyter Notebook file `DenseFly Tutorial - MNIST demo.ipynb`
