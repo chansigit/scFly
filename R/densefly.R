@@ -94,11 +94,11 @@ GetShortHash<- function(activations, nProj){
 #' @param do.center set this to TRUE if you hope to zero-centralize the data
 #' @param seed a seed for generating random vectors in LSH
 #'
-#' @return a list of embedding results `@long` stores the long hash, `@short` stores the short hash, `@activations` stores the activations
+#' @return a list of embedding results `@long` stores the long hash, `@short` stores the short hash
 #' @export
 #'
 #' @examples
-BuildEmbeddedObject <- function(data, hash.length, nProj, sampling.rate, do.center=FALSE, seed=19940929){
+BuildEmbeddedObject <- function(data, hash.length, nProj, sampling.rate, do.center=FALSE, seed=19940929, old.code=FALSE){
   set.seed(seed)
   if (do.center){
     data <- data-rowMeans(data)
@@ -115,20 +115,10 @@ BuildEmbeddedObject <- function(data, hash.length, nProj, sampling.rate, do.cent
   message(paste("Calculating activations and the binary codes takes" ,sprintf("%.2f",elapse), "seconds."))
 
 
-  # build a hash table for quick query of short encoded cells
-  start_time <- Sys.time()
-  library("hash")
-  hashtable.short  <- hash()
-  HashtableInsertMatrix(matrix=encode.short, hash.table=hashtable.short)
-  end_time   <- Sys.time()
-  elapse     <-as.numeric(end_time-start_time)
-  message(paste("Hashing short codes takes" ,sprintf("%.2f",elapse), "seconds."))
-
   # return a list of embeddings
   message(paste(nrow(data), "data items are processed"))
   return (list("encode.long"  = encode.long  ,
-               "encode.short" = encode.short ,
+               "encode.short" = encode.short
                #"activations"  = activations  , remove activations to save space
-               "hashtable"    = hashtable.short))
+  ))
 }
-

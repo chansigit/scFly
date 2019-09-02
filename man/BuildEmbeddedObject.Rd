@@ -5,7 +5,7 @@
 \title{BuildEmbeddedObject}
 \usage{
 BuildEmbeddedObject(data, hash.length, nProj, sampling.rate,
-  do.center = FALSE, seed = 19940929)
+  do.center = FALSE, seed = 19940929, old.code = FALSE)
 }
 \arguments{
 \item{data}{an input matrix, each row is a data entry}
@@ -21,7 +21,7 @@ BuildEmbeddedObject(data, hash.length, nProj, sampling.rate,
 \item{seed}{a seed for generating random vectors in LSH}
 }
 \value{
-a list of embedding results `@long` stores the long hash, `@short` stores the short hash, `@activations` stores the activations
+a list of embedding results `@long` stores the long hash, `@short` stores the short hash
 }
 \description{
 BuildEmbeddedObject
