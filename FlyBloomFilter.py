@@ -31,7 +31,7 @@ def SB(d, m, rate,rand_seed=42):
 
 class FlyBloomFilter():
     def __init__(self, reference, length, sampling_rate, topK):
-        self.X = reference
+        self.X = dok_matrix(reference)
         self.d = reference.shape[1]
         self.m = length
         self.sampling_rate= sampling_rate
@@ -44,18 +44,27 @@ class FlyBloomFilter():
     def remember(self):
         # apply random projection to compute Kenyon cell activities for input
         t1=time.time()
-        self.KC = self.X @ self.M
-        
+        self.KC = (self.X @ self.M)
+        t2=time.time()
+        print("matrix mul time: %f s"%(t2-t1))
+
+        t1=time.time()
+        self.KC= self.KC.todense()
         # reset bits corresponding to the top k indices
         hit_idx = (-self.KC).argsort()[:, :self.topK]
         #hit_idx =  np.asarray(hit_idx).flatten()
         #self.B[hit_idx]=0
+        t2=time.time()
+        print("top activation selection time: %f s"%(t2-t1))
+        
+        t1=time.time()
         self.B[np.asarray(hit_idx)]=0
+        t2=time.time()
+        print("setting time: %f s"%(t2-t1))
         
         self.loading_factor=sum(self.B==0)/self.m
         print(self.loading_factor)
-        t2=time.time()
-        print("time: %f s"%(t2-t1))
+        
     
     def response(self, X):
         t1=time.time()
